@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from "cloudinary";
-
 import fs from "fs"
 
 
@@ -9,6 +8,12 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY, 
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+console.log("cloudinary config:" , {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+})
 
 const uploadOnCloudinary = async (localFilePath) => {
     try{
@@ -22,7 +27,7 @@ const uploadOnCloudinary = async (localFilePath) => {
         return response;
     }
     catch(error){
-        fs.unlink(localFilePath) // remove the locally save temp file a
+        fs.unlinkSync(localFilePath) // remove the locally save temp file a
         console.log(error)
         return null;
     }

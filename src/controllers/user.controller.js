@@ -17,17 +17,19 @@ const userRegister = asyncHandler(async(req,res) => {
 
 
     const {fullName,email,username,password} = req.body
-    console.log(user)
+    // console.log(user)
+    console.log("req.files" , req.files);
+    console.log("req.body:", req.body)
 
 
     if(
         [fullName,password,email,username].some((field)=>
         field?.trim() === "")
     ){
-        throw new ApiError(400,"All field as required")
+        throw new ApiError(400,"All fields as required")
     }
 
-    const existingUser = User.findOne({
+    const existingUser = await User.findOne({
         $or: [{username},{email}]
     })
 
@@ -35,7 +37,14 @@ const userRegister = asyncHandler(async(req,res) => {
         throw new ApiError(409,"Users already exist")
     }
 
-    const avatarLocalPath = req.files?.avatar[0]?.path;
+    const avatarFiles = req.files?.avatar;
+    console.log("avatarFiles : ",avatarFiles);
+
+    if(!avatarFiles || !avatarFiles[0]){
+         console.log("No avatar file uploaded — skipping Cloudinary upload");
+        // throw new ApiError(400, "Avatar file is required");
+    }
+    const avatarLocalPath = avatarFiles[0].path;
      //console.log(req.files?.avatar[0]?.path)
 
     const coverImageLocalPath = req.files?.coverImage[0]?.path;
